@@ -45,7 +45,7 @@ int main() {
 		break;
 
 	case 3:
-		CLS;
+		cls;
 		printf("Thank you for playing!\n\n");
 		PAUSE;
 		exit(-1);
