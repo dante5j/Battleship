@@ -4,61 +4,58 @@
 //**********Due Sunday October 8th***********
 //*******************************************
 
-#define _CRT_SECURE_NO_WARNINGS
-#define PAUSE system("pause")
-#define CLS system("cls")
-#define FLUSH myFlush()
-#include <stdio.h>
-#include <stdlib.h>
+#include "template.h"
 
+void displayMenu();
 void displayGrid(char grid[11][11]);
+char getChoice();
 
 int main() {
 	char grid[11][11] = {
-	{'0',  '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'},
-	{'1',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'2',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'3',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'4',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'5',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'6',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'7',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'8',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'9',  '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
-	{'10', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'},
+		{ '\0',  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J' },
+		{ '0',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '1',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '2',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '3',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '4',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '5',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '6',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '7',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '8',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
+		{ '9',  'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W' },
 	};
-	int choice = 0;
+	char choice;
 
-	printf("*****BATTLESHIP*****\n\n");
-	printf("1. New Game.\n");
-	printf("2. Show high scores.\n");
-	printf("3. quit.\n");
-	scanf("%i", &choice);
-
-	switch (choice) {
-	case 1:
-
-		break;
-
-	case 2:
-
-		break;
-
-	case 3:
-		cls;
-		printf("Thank you for playing!\n\n");
-		PAUSE;
-		exit(-1);
-		break;
-
-	default:
-		CLS;
-		printf("ERROR - INVALID ENTRY.\n");
-		PAUSE;
-		main();
-	}
+	do {
+		displayMenu();
+		choice = getChoice();
+		switch (choice) {
+		case 'N':
+			displayGrid(grid);
+			break;
+		case 'C':
+			break;
+		case 'H':
+			break;
+		case 'Q':
+			printf("Thanks for playing!\n\n");
+		default:
+			printf("ERROR - INVALID ENTRY.\n");
+			PAUSE;
+		}// end switch
+	} while (choice != 'Q');
 	PAUSE;
 }//End Main
+
+void displayMenu(){
+	CLS;
+	printf("*****BATTLESHIP*****\n\n");
+	printf("[N]ew Game.\n");
+	printf("[C]ontinue");
+	printf("[H]igh scores.\n");
+	printf("[Q]uit.\n\n");
+	printf("Enter selection: ");
+}// end displayMenu
 
 void displayGrid(char grid[11][11]) {
 	int i = 0;
@@ -72,3 +69,9 @@ void displayGrid(char grid[11][11]) {
 	}   printf("\n");
 }//End displayGrid
 
+char getChoice() {
+	char result;
+	scanf("%c", &result); FLUSH;
+	toupper(result);
+	return result;
+}// end getChoice
