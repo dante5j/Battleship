@@ -14,6 +14,7 @@ void placeBattleship(char battleField[11][11]);
 void placeCruiser(char battleField[11][11]);
 void placeDestroyer(char battleField[11][11]);
 void placeSubmarine(char battleField[11][11]);
+void reset(char battleField[11][11]);
 
 int main() {
 	char battleField[11][11] = {
@@ -38,18 +39,17 @@ int main() {
 		case 'N':
 			CLS;
 			printf("ORIGINAL GRID\n");
+			reset(battleField);
 			displayGrid(battleField);
 			PAUSE;
 			printf("Placing ships...");
 			placeCruiser(battleField);
-			CLS;
 			placeAircraftCarrier(battleField);
-			CLS;
 			placeBattleship(battleField);
-			CLS;
 			placeSubmarine(battleField);
-			CLS;
 			placeDestroyer(battleField);
+			displayGrid(battleField);
+			PAUSE;
 			break;
 		case 'C':
 			break;
@@ -65,7 +65,7 @@ int main() {
 			break;
 		}// end switch
 	} while (choice != 'Q');
-}//End Main
+}//End Main *************************************************************************************************
 
 void displayMenu() {
 	CLS;
@@ -97,575 +97,503 @@ char getChoice() {
 }// end getChoice
 
 void placeAircraftCarrier(char battleField[11][11]) {
-	int temp, x, y, z, i;
+	int x, y, z, i, temp;
+	char collision;
 
 	srand((unsigned)time(NULL));
-	x = (rand() % 9) + 1;
-	y = (rand() % 9) + 1;
-	z = (rand() % 4) + 1;
 
+	// test if ship placement is possible
+	do {
+		collision = 'N';
+		x = (rand() % 9) + 1;
+		y = (rand() % 9) + 1;
+		z = (rand() % 4) + 1;
+		if (z == 1) {
+			temp = x;
+			for (i = 0; i < 5; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+			}
+		}// end if case 1
 
-	if (battleField[x][y] == 'W') {
-		battleField[x][y] = 'A';
-	}
-	else if (battleField[x + 1][y] == 'W' && battleField[x + 1][y] != NULL) {
-		x++;
-		battleField[x][y] = 'A';
-	}
-	else if (battleField[x][y + 1] == 'W' && battleField[x][y + 1] != NULL) {
+		else if (z == 2) {
+			temp = x;
+			for (i = 0; i < 5; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+			}
+		}// end if case 2
 
-		y++;
-		battleField[x][y] = 'A';
-	}
-	printf("the PLACEMNT OF AIRCRAFT CARRIER  %i , %i CASE %i", x, y, z);
-	printf("\n");
-	printf("\n");
+		else if (z == 3) {
+			temp = y;
+			for (i = 0; i < 5; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+			}
+		}// end if case 3
 
+		else if (z == 4) {
+			temp = y;
+			for (i = 0; i < 5; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+			}
+		}// end if case 4
+	} while (collision != 'N');
+	// place the ships
+	
 	switch (z) {
-	case 1:
-		temp = x;
-		for (i = 0; i < 4; i++) {
-
-
-			if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'A';
+		case 1:// down
+			for (i = 0; i < 5; i++) {
+				battleField[x][y] = 'A';
 				x++;
 			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[temp - 1][y] = 'A';
-				x--;
-			}
-
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'A';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'A';
-				y--;
-			}
-		}
 		break;
-	case 2:
-		temp = x;
-		for (i = 0; i < 4; i++) {
-
-			if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'A';
+	case 2:// up
+		for (i = 0; i < 5; i++) {
+				battleField[x][y] = 'A';
 				x--;
 			}
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'A';
-				x++;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'A';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'A';
-				y--;
-			}
-		}
 		break;
-	case 3:
-		temp = y;
-
-		for (i = 0; i < 4; i++) {
-
-			if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'A';
+	case 3:// right
+		for (i = 0; i < 5; i++) {
+				battleField[x][y] = 'A';
 				y++;
 			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'A';
-				y--;
-			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'A';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'A';
-				x--;
-			}
-		}
-
 		break;
-	case 4:
-		temp = y;
-
-		for (i = 0; i < 4; i++) {
-
-			if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'A';
+	case 4:// left	
+		for (i = 0; i < 5; i++) {
+				battleField[x][y] = 'A';
 				y--;
 			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'A';
-				y++;
-			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'A';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'A';
-				x--;
-			}
-		}
 		break;
 	default:
 		break;
-	}
-	printf("Aircraft Carrier placed...\n");
-	displayGrid(battleField);
-	PAUSE;
-
+	}// end switch
 }// end placeAircraftCarrier
 
 void placeCruiser(char battleField[11][11]) {
-	int x, y, z;
-	srand((unsigned)time(NULL));
-	x = (rand() % 9) + 1;
-	y = (rand() % 9) + 1;
-	z = (rand() % 4) + 1;
+	int x, y, z, i, temp;
+	char collision;
 
-	battleField[x][y] = 'C';
+	srand((unsigned)time(NULL));
+
+	// test if ship placement is possible
+	do {
+		collision = 'N';
+		x = (rand() % 9) + 1;
+		y = (rand() % 9) + 1;
+		z = (rand() % 4) + 1;
+		if (z == 1) {
+			temp = x;
+			for (i = 0; i < 2; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 1
+
+		else if (z == 2) {
+			temp = x;
+			for (i = 0; i < 2; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 2
+
+		else if (z == 3) {
+			temp = y;
+			for (i = 0; i < 2; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 3
+
+		else if (z == 4) {
+			temp = y;
+			for (i = 0; i < 2; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 4
+	} while (collision != 'N');
+	// place the ships
 
 	switch (z) {
-	case 1:
-		if (battleField[x + 1][y] == 'W')
-			battleField[x + 1][y] = 'C';
-		else if (battleField[x - 1][y] == 'W')
-			battleField[x - 1][y] = 'C';
-		else if (battleField[x][y + 1] == 'W')
-			battleField[x][y + 1] = 'C';
-		else if (battleField[x][y - 1] == 'W')
-			battleField[x][y - 1] = 'C';
+	case 1:// down
+		if (collision == 'N') {
+			for (i = 0; i < 2; i++) {
+				battleField[x][y] = 'C';
+				x++;
+			}
+		}
 		break;
-	case 2:
-		if (battleField[x - 1][y] == 'W')
-			battleField[x - 1][y] = 'C';
-		else if (battleField[x + 1][y] == 'W')
-			battleField[x][y + 1] = 'C';
-		else if (battleField[x][y - 1] == 'W')
-			battleField[x][y - 1] = 'C';
-
+	case 2:// up
+		if (collision == 'N') {
+			for (i = 0; i < 2; i++) {
+				battleField[x][y] = 'C';
+				x--;
+			}
+		}
 		break;
-	case 3:
-		if (battleField[x][y + 1] == 'W')
-			battleField[x][y + 1] = 'C';
-		else if (battleField[x][y - 1] == 'W')
-			battleField[x][y - 1] = 'C';
-		else if (battleField[x - 1][y] == 'W')
-			battleField[x - 1][y] = 'C';
-
+	case 3:// right
+		if (collision == 'N') {
+			for (i = 0; i < 2; i++) {
+				battleField[x][y] = 'C';
+				y++;
+			}
+		}
 		break;
-	case 4:
-		if (battleField[x][y - 1] == 'W')
-			battleField[x][y - 1] = 'C';
-		else if (battleField[x][y + 1] == 'W')
-			battleField[x][y + 1] = 'C';
-		else if (battleField[x + 1][y] == 'W')
-			battleField[x + 1][y] = 'C';
-		else if (battleField[x - 1][y] == 'W')
-			battleField[x - 1][y] = 'C';
-
+	case 4:// left
+		if (collision == 'N') {
+			for (i = 0; i < 2; i++) {
+				battleField[x][y] = 'C';
+				y--;
+			}
+		}
 		break;
 	default:
 		break;
-	}
 
-	printf("the PLACEMNT OF CRUISER SHIP %i , %i CASE %i", x, y, z);
-	printf("\n");
-	printf("\n");
-
-	displayGrid(battleField);
-	printf("Lil yachty Placed\n");
-	PAUSE;
+	}// end switch
 }// end placeCruiser
 
 void placeBattleship(char battleField[11][11]) {
 	int x, y, z, i, temp;
-	srand((unsigned)time(NULL));
-	x = (rand() % 9) + 1;
-	y = (rand() % 9) + 1;
-	z = (rand() % 4) + 1;
+	char collision;
 
-	if (battleField[x][y] == 'W') {
-		battleField[x][y] = 'B';
-	}
-	else if (battleField[x + 1][y] == 'W' && battleField[x + 1][y] != NULL) {
-		x++;
-		battleField[x][y] = 'B';
-	}
-	else if (battleField[x][y + 1] == 'W' && battleField[x][y + 1] != NULL) {
-		y++;
-		battleField[x][y] = 'B';
-	}
-	printf("the PLACEMNT OF BATTLESHIP %i , %i CASE %i", x, y, z);
-	printf("\n");
-	printf("\n");
+	srand((unsigned)time(NULL));
+
+	// test if ship placement is possible
+	do {
+		collision = 'N';
+		x = (rand() % 9) + 1;
+		y = (rand() % 9) + 1;
+		z = (rand() % 4) + 1;
+		if (z == 1) {
+			temp = x;
+			for (i = 0; i < 4; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 1
+
+		else if (z == 2) {
+			temp = x;
+			for (i = 0; i < 4; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 2
+
+		else if (z == 3) {
+			temp = y;
+			for (i = 0; i < 4; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 3
+
+		else if (z == 4) {
+			temp = y;
+			for (i = 0; i < 4; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 4
+	} while (collision != 'N');
+	// place the ships
 
 	switch (z) {
-	case 1:
-		temp = x;
-		for (i = 0; i < 3; i++) {
-
-			if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'B';
+	case 1:// down
+		if (collision == 'N') {
+			for (i = 0; i < 4; i++) {
+				battleField[x][y] = 'B';
 				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'B';
-				x--;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'B';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'B';
-				y--;
 			}
 		}
 		break;
-	case 2:
-		temp = x;
-		for (i = 0; i < 3; i++) {
-
-			if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'B';
-				x--;
-			}
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'B';
-				x++;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'B';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'B';
-				y--;
-			}
-		}
-		break;
-	case 3:
-		temp = y;
-
-		for (i = 0; i < 3; i++) {
-
-			if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'B';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'B';
-				y--;
-			}
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'B';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'B';
+	case 2:// up
+		if (collision == 'N') {
+			for (i = 0; i < 4; i++) {
+				battleField[x][y] = 'B';
 				x--;
 			}
 		}
 		break;
-	case 4:
-		temp = y;
-
-		for (i = 0; i < 3; i++) {
-
-			if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'B';
-				y--;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'B';
+	case 3:// right
+		if (collision == 'N') {
+			for (i = 0; i < 4; i++) {
+				battleField[x][y] = 'B';
 				y++;
 			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'B';
-				x++;
+		}
+		break;
+	case 4:// left
+		if (collision == 'N') {
+			for (i = 0; i < 4; i++) {
+				battleField[x][y] = 'B';
+				y--;
 			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'B';
-				x--;
-			}
-
 		}
 		break;
 	default:
 		break;
-	}
 
-	printf("Placed battleship...\n\n");
-	displayGrid(battleField);
-	PAUSE;
+	}// end switch
 }// end placeBattleship
 
 void placeSubmarine(char battleField[11][11]) {
-	int i, x, y, z, temp;
+	int x, y, z, i, temp;
+	char collision;
+
 	srand((unsigned)time(NULL));
-	x = (rand() % 9) + 1;
-	y = (rand() % 9) + 1;
-	z = (rand() % 4) + 1;
 
-	if (battleField[x][y] == 'W') {
-		battleField[x][y] = 'S';
-	}
-	else if (battleField[x + 1][y] == 'W' && battleField[x + 1][y] != NULL) {
-		x++;
-		battleField[x][y] = 'S';
-	}
-	else if (battleField[x][y + 1] == 'W' && battleField[x][y + 1] != NULL) {
-		y++;
-		battleField[x][y] = 'S';
-	}
-	printf("the PLACEMNT OF SUBMARINE %i , %i CASE %i", x, y, z);
-	printf("\n");
-	printf("\n");
+	// test if ship placement is possible
+	do {
+		collision = 'N';
+		x = (rand() % 9) + 1;
+		y = (rand() % 9) + 1;
+		z = (rand() % 4) + 1;
+		if (z == 1) {
+			temp = x;
+			for (i = 0; i < 3; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 1
 
+		else if (z == 2) {
+			temp = x;
+			for (i = 0; i < 3; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 2
+
+		else if (z == 3) {
+			temp = y;
+			for (i = 0; i < 3; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 3
+
+		else if (z == 4) {
+			temp = y;
+			for (i = 0; i < 3; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 4
+	} while (collision != 'N');
+	// place the ships
 
 	switch (z) {
-	case 1:
-		temp = x;
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'S';
+	case 1:// down
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'S';
 				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'S';
-				x--;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'S';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'S';
-				y--;
 			}
 		}
-
 		break;
-	case 2:
-		temp = x;
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'S';
-				x--;
-			}
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'S';
-				x++;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'S';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'S';
-				y--;
-			}
-		}
-
-		break;
-	case 3:
-		temp = y;
-
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'S';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'S';
-				y--;
-			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'S';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'S';
+	case 2:// up
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'S';
 				x--;
 			}
 		}
-
 		break;
-	case 4:
-		temp = y;
-
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'S';
-				y--;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'S';
+	case 3:// right
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'S';
 				y++;
 			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'S';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'S';
-				x--;
+		}
+		break;
+	case 4:// left
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'S';
+				y--;
 			}
 		}
 		break;
 	default:
 		break;
-	}
 
-	printf("Placed submarine\n\n");
-	displayGrid(battleField);
-	PAUSE;
+	}// end switch
 }// end placeSubmarine
 
 void placeDestroyer(char battleField[11][11]) {
 	int x, y, z, i, temp;
-	
-	x = (rand() % 9) + 1;
-	y = (rand() % 9) + 1;
-	z = (rand() % 4) + 1;
-	srand((unsigned)time(NULL));
-	
-	printf("PLACEMENT OF DESTROYER %i , %i CASE %i", x, y, z);
-	printf("\n");
-	printf("\n");
+	char collision;
 
-	if (battleField[x][y] == 'W') {
-		battleField[x][y] = 'D';
-	}
-	else if (battleField[x + 1][y] == 'W' && battleField[x + 1][y] != NULL) {
-		x++;
-		battleField[x][y] = 'D';
-	}
-	else if (battleField[x][y + 1] == 'W' && battleField[x][y + 1] != NULL) {
-		y++;
-		battleField[x][y] = 'D';
-	}
-	
+
+	// test if ship placement is possible
+	do {
+		collision = 'N';
+		srand((unsigned)time(NULL));
+		x = (rand() % 9) + 1;
+		y = (rand() % 9) + 1;
+		z = (rand() % 4) + 1;
+		if (z == 1) {
+			temp = x;
+			for (i = 0; i < 3; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 1
+
+		else if (z == 2) {
+			temp = x;
+			for (i = 0; i < 3; i++) {
+				if (battleField[temp][y] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 2
+
+		else if (z == 3) {
+			temp = y;
+			for (i = 0; i < 3; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp++;
+				collision = 'N';
+			}
+		}// end if case 3
+
+		else if (z == 4) {
+			temp = y;
+			for (i = 0; i < 3; i++) {
+				if (battleField[x][temp] != 'W') {
+					collision = 'Y';
+					break;
+				}
+				temp--;
+				collision = 'N';
+			}
+		}// end if case 4
+	} while (collision != 'N');
+	// place the ships
+
 	switch (z) {
-	case 1:
-		temp = x;
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'D';
+	case 1:// down
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'D';
 				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'D';
-				x--;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'D';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'D';
-				y--;
 			}
 		}
 		break;
-	case 2:
-		temp = x;
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'D';
+	case 2:// up
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'D';
 				x--;
-			}
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'D';
-				x++;
-			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'D';
-				y++;
-			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'D';
-				y--;
 			}
 		}
 		break;
-	case 3:
-		temp = y;
-
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'D';
+	case 3:// right
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'D';
 				y++;
 			}
-			else if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'D';
-				y--;
-			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'D';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'D';
-				x--;
-			}
-
 		}
 		break;
-	case 4:
-		temp = y;
-
-		for (i = 0; i < 2; i++) {
-
-			if (battleField[x][y - 1] == 'W') {
-				battleField[x][y - 1] = 'D';
+	case 4:// left
+		if (collision == 'N') {
+			for (i = 0; i < 3; i++) {
+				battleField[x][y] = 'D';
 				y--;
 			}
-			else if (battleField[x][y + 1] == 'W') {
-				battleField[x][y + 1] = 'D';
-				y++;
-			}
-
-			else if (battleField[x + 1][y] == 'W') {
-				battleField[x + 1][y] = 'D';
-				x++;
-			}
-			else if (battleField[x - 1][y] == 'W') {
-				battleField[x - 1][y] = 'D';
-				x--;
-			}
-
 		}
 		break;
 	default:
 		break;
 
-	}
-
-	printf("Placed destroyer...\n\n");
-	displayGrid(battleField);
-	PAUSE;
+	}// end switch
 
 }// end placeDestroyer
+
+void reset(char battleField[11][11]) {
+	int i, j;
+
+	for (i = 1; i < 11; i++) {
+		for (j = 1; j < 11; j++)
+			battleField[i][j] = 'W';
+	}
+}// end reset
