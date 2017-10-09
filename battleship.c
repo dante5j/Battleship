@@ -619,20 +619,17 @@ void saveHighScores(int missiles, char initials[3]) {
 	scanf("%s", initials); FLUSH;
 	initials = toupper(initials);
 	FILE* ptr;
-	ptr = fopen("highscores.bin", "rb");
+	ptr = fopen("highscores.bin", "ab");
 
-	if (ptr != NULL) {
-		ptr = fopen("highscores.bin", "ab");
-		fwrite(&missiles, sizeof(missiles), 10, ptr);
-		fwrite(&initials, sizeof(initials), 3, ptr);
-		fclose(ptr);
+	if (ptr == NULL) {
+		printf("ERROR... COULD NOT OPEN FILE\n");
+		PAUSE;
+		exit(-1);
 	}
-	else {
-		ptr = fopen("highscores.bin", "wb");
-		fwrite(&missiles, sizeof(missiles), 10, ptr);
-		fwrite(&initials, sizeof(initials), 3, ptr);
-		fclose(ptr);
-	}
+	fwrite(&missiles, sizeof(missiles), 10, ptr);
+	fwrite(&initials, sizeof(initials), 3, ptr);
+	fclose(ptr);
+
 }
 
 void loadHighScores(int missiles, char initials[3]) {
@@ -658,7 +655,6 @@ void shootMissiles(int *missiles, char userGrid[SIZE][SIZE], char battleField[SI
 			invalid = 'Y';
 			CLS;
 			printf("*****BATTLESHIP*****\n");
-			displayGrid(battleField);
 			displayGrid(userGrid);
 			printf("\nEnter first coordinate(A-J): ");
 			scanf("%c", &colCoordinate); FLUSH;
