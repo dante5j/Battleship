@@ -5,7 +5,7 @@
 #define PAUSE system("pause")
 #define CLS system("cls")
 #define FLUSH myFlush()
-#define BOARDSIZE 11
+#define SIZE 11
 
 void myFlush() {
 	while (getchar() != '\n');
