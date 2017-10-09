@@ -56,7 +56,7 @@ int main() {
 		displayMenu();
 		choice = getChoice();
 		switch (choice) {
-		case 'N':
+		case 'S':
 			CLS;
 			reset(battleField);
 			printf("Placing ships...");
@@ -67,8 +67,6 @@ int main() {
 			placeDestroyer(battleField);
 			displayGrid(battleField);
 			shootMissiles(&missiles, userGrid, battleField);
-			break;
-		case 'C':
 			saveHighScores(missiles, initials);
 			break;
 		case 'H':
@@ -89,8 +87,7 @@ int main() {
 void displayMenu() {
 	CLS;
 	printf("*****BATTLESHIP*****\n\n");
-	printf("[N]ew Game.\n");
-	printf("[C]ontinue\n");
+	printf("[S]tart Game.\n");
 	printf("[H]igh scores.\n");
 	printf("[Q]uit.\n\n");
 	printf("Enter selection: ");
@@ -617,24 +614,6 @@ void reset(char battleField[SIZE][SIZE]) {
 	}
 }// end reset
 
-void saveFile(char battleField[SIZE][SIZE], int missiles) {
-	FILE* ptr;
-	ptr = fopen("saveGame.bin", "wb");
-	fwrite(&battleField, sizeof(battleField), 122, ptr);
-	fwrite(&missiles, sizeof(missiles), 10, ptr);
-	fclose(ptr);
-}//End saveFile
-
-void loadFile(char battleField[SIZE][SIZE], int missiles) {
-	FILE* ptr;
-	ptr = fopen("saveGame.bin", "rb");
-	fread(&battleField, sizeof(battleField), 122, ptr);
-	fread(&missiles, sizeof(missiles), 10, ptr);
-	printf("Missiles: %i\n", missiles);
-	fclose(ptr);
-	PAUSE;
-}//End loadFile
-
 void saveHighScores(int missiles, char initials[3]) {
 	printf("Enter initials: ");
 	scanf("%s", initials); FLUSH;
@@ -670,7 +649,8 @@ void shootMissiles(int *missiles, char userGrid[SIZE][SIZE], char battleField[SI
 	char colCoordinate;
 	char invalid;
 	int x, y;
-	int hits = 0;
+	int hits = 0, cruiserHits = 0, destroyerHits = 0, subHits = 0, 
+		aircraftCarrierHits = 0, battleShipHits = 0;
 
 	do {
 		
@@ -678,6 +658,7 @@ void shootMissiles(int *missiles, char userGrid[SIZE][SIZE], char battleField[SI
 			invalid = 'Y';
 			CLS;
 			printf("*****BATTLESHIP*****\n");
+			displayGrid(battleField);
 			displayGrid(userGrid);
 			printf("\nEnter first coordinate(A-J): ");
 			scanf("%c", &colCoordinate); FLUSH;
@@ -741,7 +722,8 @@ void shootMissiles(int *missiles, char userGrid[SIZE][SIZE], char battleField[SI
 			}
 
 			// tests if coordinates have been used previously
-			if (userGrid[y][x] == 'H' || userGrid[y][x] == 'M') {
+			if (userGrid[y][x] == 'A' || userGrid[y][x] == 'B' || userGrid[y][x] == 'C' || userGrid[y][x] == 'D' 
+				|| userGrid[y][x] == 'S' ||userGrid[y][x] == 'M') {
 				printf("Error... You already used those coordinates.\n");
 				invalid = 'Y';
 				PAUSE;
@@ -749,25 +731,73 @@ void shootMissiles(int *missiles, char userGrid[SIZE][SIZE], char battleField[SI
 
 		} while (invalid != 'N');
 
-		// check if hit or miss
-		if (battleField[y][x] != 'W') {
+		// check if hit or miss by specific ship
+		if (battleField[y][x] != 'W' && battleField[y][x] == 'A') {
+			aircraftCarrierHits++;
 			hits++;
 			(*missiles)++;
-			userGrid[y][x] = 'H';
+			userGrid[y][x] = 'A';
 			printf("Hit!\n");
+			if (aircraftCarrierHits == 5)
+				printf("Aircraft Carrier sunk!\n");
 			printf("Missiles used: %i\n", *missiles);
-			if (hits == 17)
-				printf("You win!\n");
 			PAUSE;
 		}
-		else {
+		else if (battleField[y][x] != 'W' && battleField[y][x] == 'B') {
+			battleShipHits++;
+			hits++;
+			(*missiles)++;
+			userGrid[y][x] = 'B';
+			printf("Hit!\n");
+			if (battleShipHits == 4)
+				printf("Battleship sunk!\n");
+			printf("Missiles used: %i\n", *missiles);
+			PAUSE;
+		}
+		else if (battleField[y][x] != 'W' && battleField[y][x] == 'C') {
+			cruiserHits++;
+			hits++;
+			(*missiles)++;
+			userGrid[y][x] = 'C';
+			printf("Hit!\n");
+			if (cruiserHits == 2)
+				printf("Cruiser sunk!\n");
+			printf("Missiles used: %i\n", *missiles);
+			PAUSE;
+		}
+		else if (battleField[y][x] != 'W' && battleField[y][x] == 'D') {
+			destroyerHits++;
+			hits++;
+			(*missiles)++;
+			userGrid[y][x] = 'D';
+			printf("Hit!\n");
+			if (destroyerHits == 3)
+				printf("Destroyer sunk!\n");
+			printf("Missiles used: %i\n", *missiles);
+			PAUSE;
+		}
+		else if (battleField[y][x] != 'W' && battleField[y][x] == 'S') {
+			subHits++;
+			hits++;
+			(*missiles)++;
+			userGrid[y][x] = 'S';
+			printf("Hit!\n");
+			if (subHits == 3)
+				printf("Submarine sunk!\n");
+			printf("Missiles used: %i\n", *missiles);
+			PAUSE;
+		}
+		else { // miss
 			(*missiles)++;
 			userGrid[y][x] = 'M';
 			printf("Miss!\n");
 			printf("Missiles used: %i\n", *missiles);
 			PAUSE;
 		}
-
+		if (hits == 17) {
+			printf("You win!\n");
+			PAUSE;
+		}
 	} while (hits != 17);
 
 }// end shootMissiles
